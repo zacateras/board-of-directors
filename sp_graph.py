@@ -1,8 +1,6 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 
-from sp_rest_client import *
-
 
 class SpGraph:
     def __init__(self):
@@ -54,61 +52,3 @@ class SpGraph:
     def draw(self):
         nx.draw_networkx(self.nx_graph)
         plt.show()
-
-
-def validate_id_and_slug(item):
-    id = item['id']
-    slug = item['slug']
-    return id is not None and isinstance(id, str) and id.isdigit() and slug is not None and isinstance(slug, str)
-
-
-def extract_id_and_slug(item):
-    return item['id'], item['slug']
-
-
-def process_person(person_ref, d, max_d):
-    if not validate_id_and_slug(person_ref):
-        return
-
-    id, slug = extract_id_and_slug(person_ref)
-
-    person = client.person(id, slug)
-    person_info = person['information']
-
-    print('-' * (d * 2) + person_info['name'] + ', ' + person_info['birthYear'] + ', ' + person_info['id'])
-    if graph.add_person(person_info):
-        for company_person in person['companies']:
-            if d < max_d:
-                process_company(company_person, d, max_d)
-
-            graph.add_company_person(company_person['id'], id, company_person)
-
-
-def process_company(company_ref, d, max_d):
-    if not validate_id_and_slug(company_ref):
-        return
-
-    id, slug = extract_id_and_slug(company_ref)
-
-    company = client.company(id, slug)
-    company_info = company['information']
-
-    print('-' * (d * 2 + 1) + company_info['name'] + ', ' + company_info['krs'] + ', ' + company_info['id'])
-    if graph.add_company(company_info):
-        for representation_item in company['representation']:
-            process_person(representation_item, d + 1, max_d)
-        for directors_board_item in company['directorsBoard']:
-            process_person(directors_board_item, d + 1, max_d)
-
-
-graph = SpGraph()
-client = SpRestClient()
-
-print('START!')
-results = client.search('Piotr Nowosielski')
-results_p = [result for result in results if result['type'] == 'person']
-
-for result_p in results_p:
-    process_person(result_p, 0, 1)
-
-graph.draw()
