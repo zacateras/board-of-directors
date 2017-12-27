@@ -1,0 +1,199 @@
+{
+  "type": "object",
+  "properties": {
+    "connections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "companies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "slug": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "information": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "roles": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "shareholders": {
+      "type": "array",
+      "items": {
+        "$id": "eastbear",
+        "title": "Empty Object",
+        "description": "This accepts anything, as long as it's valid JSON."
+      }
+    },
+    "summaryText": {
+      "type": "string"
+    },
+    "representation": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "birthYear": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "buttons": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "link": {
+              "type": "string"
+            },
+            "image": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "proxies": {
+      "type": "array",
+      "items": {
+        "$id": "grizzlybear",
+        "title": "Empty Object",
+        "description": "This accepts anything, as long as it's valid JSON."
+      }
+    },
+    "information": {
+      "type": "object",
+      "properties": {
+        "slug": {
+          "type": "string"
+        },
+        "www": {
+          "type": "string"
+        },
+        "oppStatus": {
+          "type": "string"
+        },
+        "regon": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "startCapital": {
+          "type": "string"
+        },
+        "courtDesignation": {
+          "type": "string"
+        },
+        "signature": {
+          "type": "string"
+        },
+        "krs": {
+          "type": "string"
+        },
+        "legalForm": {
+          "type": "string"
+        },
+        "registerDate": {
+          "type": "string"
+        },
+        "representation": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "nip": {
+          "type": "string"
+        },
+        "representativeName": {
+          "type": "string"
+        }
+      }
+    },
+    "directorsBoard": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "birthYear": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ownerCompanies": {
+      "type": "array",
+      "items": {
+        "$id": "cinnamonbear",
+        "title": "Empty Object",
+        "description": "This accepts anything, as long as it's valid JSON."
+      }
+    },
+    "professions": {
+      "type": "array",
+      "items": {
+        "$id": "ursidbear",
+        "title": "Empty Object",
+        "description": "This accepts anything, as long as it's valid JSON."
+      }
+    }
+  }
+}
