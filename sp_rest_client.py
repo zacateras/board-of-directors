@@ -6,6 +6,10 @@ import json
 
 
 class SpRestClient:
+    """
+    Provides access to scrapped website rest API.
+    """
+
     def __init__(self, base_url):
         self.base_url = base_url
 
@@ -18,15 +22,46 @@ class SpRestClient:
         disable_warnings(InsecureRequestWarning)
 
     def search(self, query):
+        """
+        Search for any entites by given query string.
+
+        :param query: query string
+        :return: search json result
+        """
+
         return self.__request('search', {'phrase': query})
 
     def person(self, id, slug):
+        """
+        Retrives full information about a person.
+
+        :param id: person's internal id
+        :param slug: person's internal slug
+        :return: person json result
+        """
+
         return self.__request('person', {'id': id, 'slug': slug})
 
     def company(self, id, slug):
+        """
+        Retrives full information about a company.
+
+        :param id: company's internal id
+        :param slug: company's intarnal slug
+        :return: company json result
+        """
+
         return self.__request('company', {'id': id, 'slug': slug})
 
     def __request(self, relative_url, fields):
+        """
+        Performs POST request on given API relative url with provided fields.
+
+        :param relative_url: API's relative url string
+        :param fields: dictionary of request fields
+        :return: request json result
+        """
+
         response = self.http.request(
             'POST',
             self.base_url + relative_url,
@@ -37,6 +72,11 @@ class SpRestClient:
 
     @staticmethod
     def __headers():
+        """
+        Natural request headers set.
+
+        :return: Dictionary of request headers.
+        """
         return {
             'Pragma': 'no-cache',
             'Origin': 'https://sprawdz.biz',

@@ -5,6 +5,10 @@ from time import gmtime, strftime
 
 
 class SpGraph:
+    """
+    Class holding scrapping graph result with metadata.
+    """
+
     def __init__(self):
         self.nx_graph = nx.Graph()
         self.person_dict = {}
@@ -13,6 +17,13 @@ class SpGraph:
         self.paths = []
 
     def add_person(self, person):
+        """
+        Tries adding person-like json object to the graph. This can by either person_ref or person_info json object.
+
+        :param person: person-like json object (person_ref or person_info)
+        :return: True if the object was added, False if already existed.
+        """
+
         person_key = self.get_person_key(person)
 
         if person_key in self.person_dict:
@@ -23,9 +34,23 @@ class SpGraph:
         return True
 
     def exist_person(self, person):
+        """
+        Checks if person-like json object already exists in the graph.
+
+        :param person: person-like json object (person_ref or person_info)
+        :return: True if the object exists, False otherwise.
+        """
+
         return self.get_person_key(person) in self.person_dict
 
     def add_company(self, company):
+        """
+        Tries adding company-like json object to the graph. This can by either company_ref or company_info json object.
+
+        :param company: company-like json object (company_ref or company_info)
+        :return: True if the object was added, False if already existed.
+        """
+
         company_key = self.get_company_key(company)
 
         if company_key in self.company_dict:
@@ -36,9 +61,25 @@ class SpGraph:
         return True
 
     def exist_company(self, company):
+        """
+        Checks if company-like json object already exists in the graph.
+
+        :param company: company-like json object (company_ref or company_info)
+        :return: True if the object exists, False otherwise.
+        """
+
         return self.get_company_key(company) in self.company_dict
 
     def add_company_person(self, company, person, company_person=None):
+        """
+        Tries adding company_person json object to the graph.
+
+        :param company: company-like json object (company_ref or company_info)
+        :param person: person-like json object (person_ref or person_info)
+        :param company_person: company_person json object
+        :return: True if the object exists, False otherwise.
+        """
+
         person_key = self.get_person_key(person)
         company_key = self.get_company_key(company)
         company_person_key = (company_key, person_key)
@@ -51,6 +92,15 @@ class SpGraph:
         return True
 
     def person_person_path(self, person_1, person_2):
+        """
+        Checks if path between two people in graph exists.
+        If so adds it to the found paths list.
+
+        :param person_1: person-like json object (person_ref or person_info)
+        :param person_2: person-like json object (person_ref or person_info)
+        :return: True if the path exists, False otherwise.
+        """
+
         person_1_key = self.get_person_key(person_1)
         person_2_key = self.get_person_key(person_2)
 
@@ -62,6 +112,14 @@ class SpGraph:
 
     @staticmethod
     def get_person_key(item):
+        """
+        Returns person-like json object 'unique' key.
+        This is string of md5 hash of person's name and birthYear.
+
+        :param item: person-like json object (person_ref or person_info)
+        :return: Person 'unique' key.
+        """
+
         key_base = ''
         key_base = key_base if 'name' not in item else key_base + item['name']
         key_base = key_base if 'birthYear' not in item else key_base + item['birthYear']
@@ -77,6 +135,17 @@ class SpGraph:
 
     @staticmethod
     def get_company_key(item):
+        """
+        Returns company json object 'unique' key.
+        This is either one of unique natural identifiers KRS, NIP, REGON with c_krs_, c_nip_, c_regon_ perfixes,
+        or 'unique' string of md5 hash of company's register date and name.
+
+        Company_info and Company_ref produce different keys. Therefore for every entity Company_info should be examined first.
+
+        :param item: Company_info object.
+        :return: Company 'unique' key.
+        """
+
         # KRS, NIP and REGON uniquely identifies a company
         if 'krs' in item:
             return 'c_krs_' + item['krs']
@@ -101,6 +170,10 @@ class SpGraph:
         return 'c_' + str(hashlib.md5(key_base.encode()).hexdigest())
 
     def draw(self):
+        """
+        Draws cached graph representation.
+        """
+
         node_labels = {}
         for k in self.person_dict:
             v = self.person_dict[k]
@@ -112,7 +185,7 @@ class SpGraph:
         edge_labels = {}
         for k in self.company_person_dict:
             v = self.company_person_dict[k]
-            edge_labels[k] = self.__cut_label(', '.join(v['roles']))
+            edge_labels[k] = 'No role' if v is None else self.__cut_label(', '.join(v['roles']))
 
         pos = nx.spring_layout(self.nx_graph)
 
@@ -146,4 +219,11 @@ class SpGraph:
 
     @staticmethod
     def __cut_label(label):
-        return label if len(label) < 40 else label[:30] + '...'
+        """
+        Trims a string to 40 characters length. Replaces exceeding part with '...'.
+
+        :param label: any string
+        :return: Formatted string
+        """
+
+        return label if len(label) < 40 else label[:40] + '...'

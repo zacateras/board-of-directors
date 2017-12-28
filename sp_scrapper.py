@@ -1,15 +1,25 @@
-from sp_rest_client import *
 from sp_graph import *
+from sp_scrapper_cache import SpScrapperCache
 
 
 class SpScrapper:
-    def __init__(self, sp_rest_client: SpRestClient):
-        self.sp_rest_client = sp_rest_client
+    """
+    Scraps client website and builds person-company connections graph.
+    """
 
-        self.person_cache = {}
-        self.company_cache = {}
+    def __init__(self, sp_scrapper_cache: SpScrapperCache):
+        self.sp_scrapper_cache = sp_scrapper_cache
 
     def find_path(self, person_ref_1, person_ref_2, distance: int):
+        """
+        Finds path between 2 people in provided distance.
+
+        :param person_ref_1: Some person ref
+        :param person_ref_2: Some other person ref
+        :param distance: Distance measured in 'company' nodes.
+        :return: Result SpGraph.
+        """
+
         graph = SpGraph()
         generator_1 = self.__expand_person(person_ref_1, None, graph)
         generator_2 = self.__expand_person(person_ref_2, None, graph)
@@ -29,6 +39,14 @@ class SpScrapper:
         return graph
 
     def expand_person(self, person_ref, distance):
+        """
+        Searches some person's neighbourhood.
+
+        :param person_ref: Some person ref
+        :param distance: Distance measured in 'company' nodes.
+        :return: Result SpGraph.
+        """
+
         graph = SpGraph()
         generator = self.__expand_person(person_ref, None, graph)
         for i in range(distance):
@@ -38,8 +56,16 @@ class SpScrapper:
         return graph
 
     def expand_company(self, company_ref, distance):
+        """
+        Searches some company's neighbourhood.
+
+        :param company_ref: Some company ref
+        :param distance: Distance measured in 'company' nodes.
+        :return: Result SpGraph.
+        """
+
         graph = SpGraph()
-        company = self.__get_company_by_ref(company_ref)
+        company = self.sp_scrapper_cache.get_company_by_ref(company_ref)
 
         if company is None:
             print('Nothing found.')
@@ -53,7 +79,7 @@ class SpScrapper:
         return graph
 
     def __expand_person(self, person_ref, in_company_info, sp_graph: SpGraph, d=0):
-        person = self.__get_person_by_ref(person_ref)
+        person = self.sp_scrapper_cache.get_person_by_ref(person_ref)
 
         generators = []
         generators_rem = []
@@ -73,7 +99,7 @@ class SpScrapper:
 
                     if 'companies' in person:
                         for out_company_ref in person['companies']:
-                            out_company = self.__get_company_by_ref(out_company_ref)
+                            out_company = self.sp_scrapper_cache.get_company_by_ref(out_company_ref)
 
                             if out_company is None:
                                 sp_graph.add_company(out_company_ref)
@@ -134,35 +160,3 @@ class SpScrapper:
             yield d
 
         yield -1
-
-    def __get_person_by_ref(self, person_ref):
-        if not self.__validate_id_and_slug(person_ref):
-            return None
-
-        id, slug = self.__extract_id_and_slug(person_ref)
-
-        if id not in self.person_cache:
-            self.person_cache[id] = self.sp_rest_client.person(id, slug)
-
-        return self.person_cache[id]
-
-    def __get_company_by_ref(self, company_ref):
-        if not self.__validate_id_and_slug(company_ref):
-            return None
-
-        id, slug = self.__extract_id_and_slug(company_ref)
-
-        if id not in self.company_cache:
-            self.company_cache[id] = self.sp_rest_client.company(id, slug)
-
-        return self.company_cache[id]
-
-    @staticmethod
-    def __validate_id_and_slug(item):
-        id = item['id']
-        slug = item['slug']
-        return id is not None and isinstance(id, str) and id.isdigit() and slug is not None and isinstance(slug, str)
-
-    @staticmethod
-    def __extract_id_and_slug(item):
-        return item['id'], item['slug']
