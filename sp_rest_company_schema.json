@@ -44,9 +44,24 @@
     "shareholders": {
       "type": "array",
       "items": {
-        "$id": "eastbear",
-        "title": "Empty Object",
-        "description": "This accepts anything, as long as it's valid JSON."
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "birthYear": {
+            "type": "string"
+          }
+        }
       }
     },
     "summaryText": {

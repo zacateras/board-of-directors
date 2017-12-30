@@ -1,10 +1,12 @@
-couchdb:
-  image: couchdb:1.7.1
-  ports:
-    - 5984:5984
-  volumes:
-    - "./couchdb/data:/opt/couchdb/data"
-
+version: "2.1"
+services:
+  couchdb:
+    image: couchdb:1.7.1
+    ports:
+      - 5984:5984
+    volumes:
+      - "./couchdb/data:/opt/couchdb/data"
+    
 # Graph database may be used in the future
 # neo4j:
 #   image: neo4j:3.3
