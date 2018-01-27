@@ -137,18 +137,31 @@ class SpScrapper:
 
         company_info = company['information']
 
-        if 'shareholders' in company:
-            for shareholders_person_ref in company['shareholders']:
-                if not sp_graph.exist_person(shareholders_person_ref):
-                    generators.append(self.__expand_person(shareholders_person_ref, company_info, sp_graph, d + 1))
+        # Needs testing
+        # if 'shareholders' in company:
+        #     for shareholders_person_ref in company['shareholders']:
+        #         if sp_graph.get_person_key(shareholders_person_ref) is None:
+        #             print('Invalid shareholders_person_ref found! %s' % str(shareholders_person_ref))
+        #             continue
+
+        #         if not sp_graph.exist_person(shareholders_person_ref):
+        #             generators.append(self.__expand_person(shareholders_person_ref, company_info, sp_graph, d + 1))
                     
         if 'representation' in company:
             for representation_person_ref in company['representation']:
+                if sp_graph.get_person_key(representation_person_ref) is None:
+                    print('Invalid representation_person_ref found! %s' % str(representation_person_ref))
+                    continue
+
                 if not sp_graph.exist_person(representation_person_ref):
                     generators.append(self.__expand_person(representation_person_ref, company_info, sp_graph, d + 1))
                     
         if 'directorsBoard' in company:
             for directors_board_person_ref in company['directorsBoard']:
+                if sp_graph.get_person_key(directors_board_person_ref) is None:
+                    print('Invalid directors_board_person_ref found! %s' % str(directors_board_person_ref))
+                    continue
+
                 if not sp_graph.exist_person(directors_board_person_ref):
                     generators.append(self.__expand_person(directors_board_person_ref, company_info, sp_graph, d + 1))
 

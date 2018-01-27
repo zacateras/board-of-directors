@@ -129,7 +129,7 @@ class SpGraph:
         # key_base = key_base if 'id' not in item else key_base + item['id']
 
         if key_base is '':
-            raise Exception('Person key must not be empty.')
+            return None
 
         return 'p_' + str(hashlib.md5(key_base.encode()).hexdigest())
 

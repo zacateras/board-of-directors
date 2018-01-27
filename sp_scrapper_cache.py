@@ -89,9 +89,14 @@ class SpScrapperCache:
             return item
 
         item = item_rest_client_method(id, slug)
-        item['timestamp'] = time.gmtime()
-        self.couch_db[couch_id] = item
-        item_cache[id] = item
+        
+        try:
+            item['timestamp'] = time.gmtime()
+            self.couch_db[couch_id] = item
+            item_cache[id] = item
+        except Exception as ex:
+            print(ex)
+
         return item
 
     @staticmethod
